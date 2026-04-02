@@ -30,7 +30,7 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 py-5 border-b border-b-surface-container">
         <div
-          className="flex items-center justify-center rounded-[10px] size-8 bg-primary-gradient"
+          className="flex items-center justify-center rounded-[10px] size-8 bg-primary"
         >
           <Compass size={16} className="text-white" strokeWidth={1.5} />
         </div>
