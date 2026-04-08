@@ -16,9 +16,9 @@ function TypingIndicator() {
   return (
     <div className="flex items-end gap-2 animate-fade-up">
       <div className="flex items-center justify-center size-7 rounded-full bg-surface-container shrink-0">
-        <Bot size={14} className="text-primary" />
+        <Bot size={14} className="text-secondary" />
       </div>
-      <div className="flex items-center gap-1 bg-surface-lowest rounded-[12px] rounded-bl-[4px] px-4 py-3 shadow-float">
+      <div className="flex items-center gap-1 bg-surface-lowest rounded-2xl rounded-bl-sm px-4 py-3 shadow-float">
         {[0, 1, 2].map((i) => (
           <span
             key={i}
@@ -41,14 +41,14 @@ function Message({ msg }: { msg: ChatMessage }) {
           isUser ? "bg-primary-gradient text-white" : "bg-surface-container"
         )}
       >
-        {isUser ? <User size={14} /> : <Bot size={14} className="text-primary" />}
+        {isUser ? <User size={14} /> : <Bot size={14} className="text-secondary" />}
       </div>
       <div
         className={cn(
           "max-w-[85%] px-4 py-3 text-sm leading-relaxed",
           isUser
-            ? "bg-primary text-on-primary rounded-[12px] rounded-br-[4px]"
-            : "bg-surface-lowest text-on-surface rounded-[12px] rounded-bl-[4px] shadow-float"
+            ? "bg-secondary text-white rounded-2xl rounded-br-sm"
+            : "bg-surface-lowest text-on-surface rounded-2xl rounded-bl-sm shadow-float"
         )}
       >
         {msg.content}
@@ -126,7 +126,8 @@ export function ChatPanel() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-3 rounded-[14px] bg-primary-gradient text-white text-sm font-semibold shadow-overlay hover:opacity-90 active:scale-95 transition-all z-40"
+          className="fixed bottom-6 right-6 flex items-center gap-2 px-5 py-3 rounded-button bg-primary-gradient text-white text-sm font-semibold hover:opacity-90 active:scale-95 transition-all z-40"
+          style={{ boxShadow: "var(--shadow-overlay)" }}
         >
           <Sparkles size={16} />
           Ask AI Strategist
@@ -134,26 +135,35 @@ export function ChatPanel() {
         </button>
       )}
 
-      {/* Drawer */}
+      {/* Drawer — glassmorphism over surface */}
       {open && (
         <aside
-          className="flex flex-col bg-surface-lowest border-l border-l-surface-container shrink-0 animate-fade-up"
-          style={{ width: "360px" }}
+          className="flex flex-col shrink-0 animate-fade-up"
+          style={{
+            width: "360px",
+            background: "color-mix(in srgb, var(--surface-lowest) 85%, transparent)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            borderLeft: "1px solid color-mix(in srgb, var(--outline-variant) 15%, transparent)",
+          }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-b-surface-container">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center size-8 rounded-[10px] bg-primary/10">
-                <Sparkles size={16} className="text-primary" />
+          <div
+            className="flex items-center justify-between px-5 py-4"
+            style={{ borderBottom: "1px solid color-mix(in srgb, var(--outline-variant) 15%, transparent)" }}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-center size-8 rounded-xl bg-secondary/10">
+                <Sparkles size={16} className="text-secondary" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-on-surface">AI Strategist</p>
+                <p className="text-sm font-semibold text-on-surface" style={{ fontFamily: "var(--font-display)" }}>AI Strategist</p>
                 <p className="text-xs text-on-surface-variant">Powered by Claude</p>
               </div>
             </div>
             <button
               onClick={() => setOpen(false)}
-              className="size-8 flex items-center justify-center rounded-[8px] text-on-surface-variant hover:bg-surface-low transition-colors"
+              className="size-8 flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-colors"
             >
               <X size={16} />
             </button>
@@ -176,7 +186,7 @@ export function ChatPanel() {
                 <button
                   key={p}
                   onClick={() => sendMessage(p)}
-                  className="w-full text-left text-xs px-3 py-2 rounded-[8px] bg-surface-low hover:bg-surface-container text-on-surface-variant transition-colors"
+                  className="w-full text-left text-xs px-3 py-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant transition-colors"
                 >
                   {p}
                 </button>
@@ -185,7 +195,10 @@ export function ChatPanel() {
           )}
 
           {/* Input */}
-          <div className="px-4 py-4 border-t border-t-surface-container">
+          <div
+            className="px-4 py-4"
+            style={{ borderTop: "1px solid color-mix(in srgb, var(--outline-variant) 15%, transparent)" }}
+          >
             <div className="flex gap-2 items-end">
               <textarea
                 ref={inputRef}
@@ -194,13 +207,17 @@ export function ChatPanel() {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask anything about your results…"
                 rows={1}
-                className="flex-1 resize-none text-sm px-4 py-2.5 rounded-[12px] bg-surface-low border-ghost outline-none focus:border-primary focus:border-2 text-on-surface placeholder:text-on-surface-variant transition-colors"
-                style={{ minHeight: "40px", maxHeight: "120px" }}
+                className="flex-1 resize-none text-sm px-4 py-2.5 rounded-xl bg-surface-container-low outline-none text-on-surface placeholder:text-on-surface-variant transition-colors focus:bg-surface-lowest"
+                style={{
+                  minHeight: "40px",
+                  maxHeight: "120px",
+                  border: "1px solid color-mix(in srgb, var(--outline-variant) 20%, transparent)",
+                }}
               />
               <button
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || loading}
-                className="flex items-center justify-center size-10 rounded-[12px] bg-primary-gradient text-white disabled:opacity-40 hover:opacity-90 active:scale-95 transition-all"
+                className="flex items-center justify-center size-10 rounded-xl bg-primary-gradient text-white disabled:opacity-40 hover:opacity-90 active:scale-95 transition-all"
               >
                 <Send size={16} />
               </button>

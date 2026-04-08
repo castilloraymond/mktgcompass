@@ -13,9 +13,9 @@ interface WaterfallChartProps {
 
 const TYPE_COLORS: Record<string, string> = {
   baseline: "#9CA3AF",
-  positive: "#D97706",
-  negative: "#DC2626",
-  total:    "#855300",
+  positive: "#2563EB",
+  negative: "#EF4444",
+  total:    "#1D4ED8",
 };
 
 // Build cumulative offsets for a true waterfall
@@ -59,14 +59,17 @@ export function WaterfallChart({ data }: WaterfallChartProps) {
   const chartData = buildWaterfallData(data);
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={chartData} barCategoryGap="25%">
+    <ResponsiveContainer width="100%" height={320}>
+      <BarChart data={chartData} barCategoryGap="25%" margin={{ bottom: 10 }}>
         <CartesianGrid vertical={false} stroke="var(--surface-container)" strokeDasharray="0" />
         <XAxis
           dataKey="label"
           axisLine={false}
           tickLine={false}
-          tick={{ fill: "var(--on-surface-variant)", fontSize: 12, fontFamily: "var(--font-body)" }}
+          interval={0}
+          height={60}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          tick={{ fill: "var(--on-surface-variant)", fontSize: 11, fontFamily: "var(--font-body)", angle: -40, textAnchor: "end", dy: 4 } as any}
         />
         <YAxis
           axisLine={false}

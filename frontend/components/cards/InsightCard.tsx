@@ -1,4 +1,4 @@
-import { Sparkles, ArrowRight, TrendingUp } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { InsightCard as InsightCardType } from "@/lib/types";
 
@@ -7,57 +7,52 @@ interface InsightCardProps {
   staggerIndex?: number;
 }
 
-const PRIORITY_STYLES: Record<string, string> = {
-  high:   "border-l-primary",
-  medium: "border-l-info",
-  low:    "border-l-outline",
-};
-
 export function InsightCard({ insight, staggerIndex = 0 }: InsightCardProps) {
   return (
     <div
-      className={cn(
-        "bg-[#FFFBEB] rounded-card p-5 border-l-4 animate-fade-up",
-        PRIORITY_STYLES[insight.priority]
-      )}
+      className={cn("bg-surface-lowest rounded-card p-5 animate-fade-up")}
       style={{
+        border: "1px solid var(--outline)",
         boxShadow: "var(--shadow-float)",
         "--stagger-delay": `${staggerIndex * 80}ms`,
       } as React.CSSProperties}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center size-7 rounded-[8px] bg-primary/10 shrink-0">
-            <Sparkles size={14} className="text-primary" />
-          </div>
-          <span className="text-label-md font-semibold text-primary uppercase tracking-wider">
-            AI Insight
-          </span>
-        </div>
-        {insight.impact && (
-          <span className="flex items-center gap-1 text-xs font-semibold text-grade-elite bg-grade-elite/10 px-2.5 py-1 rounded-badge">
-            <TrendingUp size={12} />
+      {/* Impact badge */}
+      {insight.impact && (
+        <div className="mb-3">
+          <span
+            className="text-[11px] font-semibold px-2.5 py-1 rounded-[6px]"
+            style={{
+              background: "var(--accent-primary-light)",
+              color: "var(--accent-primary)",
+            }}
+          >
             {insight.impact}
           </span>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Title */}
-      <h3 className="mt-3 text-sm font-semibold text-on-surface leading-snug">
+      <h3
+        className="text-[0.9375rem] font-semibold text-on-surface leading-snug"
+        style={{ fontFamily: "var(--font-display)" }}
+      >
         {insight.title}
       </h3>
 
       {/* Body */}
-      <p className="mt-1.5 text-sm text-on-surface-variant leading-relaxed">
+      <p className="mt-1.5 text-[0.875rem] text-on-surface-variant leading-relaxed">
         {insight.body}
       </p>
 
-      {/* Action */}
+      {/* Action button */}
       {insight.action && (
-        <button className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-primary hover:gap-2.5 transition-all">
+        <button
+          className="mt-4 flex items-center gap-1.5 text-[0.8125rem] font-semibold transition-all hover:gap-2"
+          style={{ color: "var(--accent-primary)" }}
+        >
           {insight.action}
-          <ArrowRight size={12} />
+          <ArrowRight size={13} strokeWidth={2} />
         </button>
       )}
     </div>
