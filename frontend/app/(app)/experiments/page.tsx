@@ -28,7 +28,7 @@ export default function ExperimentsPage() {
       </div>
 
       <Link
-        href="/"
+        href="/dashboard"
         className="text-sm font-medium text-primary hover:opacity-70 transition-opacity"
       >
         ← Back to Overview

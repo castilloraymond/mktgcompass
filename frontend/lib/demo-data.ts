@@ -167,14 +167,14 @@ export const DEMO_DATA: DashboardData = {
 };
 
 export const CHART_COLORS = {
-  primary:   "#D97706",
-  secondary: "#DC2626",
-  tertiary:  "#059669",
-  info:      "#2563EB",
+  primary:   "#2563EB",   // accent blue — primary series, Organic
+  secondary: "#F59E0B",   // amber — reserved for Paid Search
+  tertiary:  "#10B981",   // green — growth
+  info:      "#06B6D4",   // cyan — Brand
   baseline:  "#9CA3AF",
   muted:     "#E5E7EB",
   channels: [
-    "#D97706", "#2563EB", "#059669", "#DC2626",
+    "#2563EB", "#F59E0B", "#10B981", "#06B6D4",
     "#7C3AED", "#DB2777", "#0891B2", "#65A30D",
   ],
 } as const;

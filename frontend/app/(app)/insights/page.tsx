@@ -25,7 +25,7 @@ export default function InsightsPage() {
 
       {/* Summary banner */}
       <div
-        className="flex items-center gap-4 bg-[#FFFBEB] rounded-card p-5 animate-fade-up"
+        className="flex items-center gap-4 bg-surface-warning rounded-card p-5 animate-fade-up"
         style={{ boxShadow: "var(--shadow-float)", "--stagger-delay": "60ms" } as React.CSSProperties}
       >
         <div className="flex items-center justify-center size-12 rounded-[14px] bg-primary/10">

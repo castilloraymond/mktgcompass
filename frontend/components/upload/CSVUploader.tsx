@@ -39,7 +39,7 @@ const MOCK_VALIDATION: ValidationResult = {
 
 const SEVERITY_STYLES = {
   error:   { icon: AlertCircle,    bg: "bg-error/5",   border: "border-l-error",   text: "text-error",   label: "Error" },
-  warning: { icon: AlertCircle,    bg: "bg-[#FFFBEB]", border: "border-l-primary", text: "text-primary", label: "Warning" },
+  warning: { icon: AlertCircle,    bg: "bg-surface-warning", border: "border-l-primary", text: "text-primary", label: "Warning" },
   info:    { icon: Info,           bg: "bg-info/5",    border: "border-l-info",    text: "text-info",    label: "Info" },
 };
 
@@ -270,7 +270,7 @@ export function CSVUploader() {
               className={cn(
                 "flex items-center justify-center size-10 rounded-[12px] shrink-0",
                 result.status === "pass" ? "bg-grade-elite/10" :
-                result.status === "warnings" ? "bg-[#FFFBEB]" : "bg-error/10"
+                result.status === "warnings" ? "bg-surface-warning" : "bg-error/10"
               )}
             >
               {result.status === "pass"
@@ -313,7 +313,7 @@ export function CSVUploader() {
           {result.can_proceed && (
             <button
               onClick={startTraining}
-              className="w-full h-12 rounded-[12px] bg-primary-gradient text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+              className="w-full h-12 rounded-[12px] bg-primary-gradient text-white font-semibold text-sm btn-primary-lift"
             >
               Run Marketing Mix Model →
             </button>

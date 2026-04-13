@@ -80,7 +80,7 @@ export function SaturationCurve({ channels }: SaturationCurveProps) {
               {ch.channel}
               <span
                 className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold text-white"
-                style={{ background: ch.saturation_pct > 70 ? "#DC2626" : ch.saturation_pct > 50 ? "#D97706" : "#059669" }}
+                style={{ background: ch.saturation_pct > 70 ? "var(--error)" : ch.saturation_pct > 50 ? "var(--accent-warning)" : "var(--success)" }}
               >
                 {ch.saturation_pct}% sat
               </span>

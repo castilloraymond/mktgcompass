@@ -15,7 +15,7 @@ export function TopBar() {
       <div className="flex items-center gap-1.5">
         {/* Search */}
         <button
-          className="flex items-center gap-2 px-3 py-2 rounded-[10px] text-[0.8125rem] text-on-surface-variant hover:bg-surface-container transition-colors"
+          className="flex items-center gap-2 px-3 py-2 rounded-[10px] text-[0.8125rem] text-on-surface-variant hover:bg-surface-container focus-ring"
           style={{ border: "1px solid var(--outline)" }}
         >
           <Search size={14} strokeWidth={1.75} />

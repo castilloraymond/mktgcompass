@@ -66,7 +66,7 @@ export function BudgetAllocator({ data }: BudgetAllocatorProps) {
       </div>
 
       {/* AI Suggestion */}
-      <div className="flex items-start gap-3 bg-[#FFFBEB] rounded-card p-4">
+      <div className="flex items-start gap-3 bg-surface-warning rounded-card p-4">
         <Sparkles size={16} className="text-primary mt-0.5 shrink-0" />
         <div>
           <p className="text-sm font-semibold text-on-surface">AI Recommendation</p>
@@ -177,7 +177,7 @@ export function BudgetAllocator({ data }: BudgetAllocatorProps) {
         {hasChanges && (
           <button
             onClick={() => setApplied(true)}
-            className="flex-1 flex items-center justify-center gap-2 h-10 rounded-[12px] bg-primary-gradient text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="flex-1 flex items-center justify-center gap-2 h-10 rounded-[12px] bg-primary-gradient text-white text-sm font-semibold btn-primary-lift"
           >
             <Check size={16} />
             {applied ? "Strategy Applied" : "Apply Strategy"}

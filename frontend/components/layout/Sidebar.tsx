@@ -14,7 +14,7 @@ const NAV_SECTIONS = [
   {
     label: "Workspace",
     items: [
-      { href: "/",            label: "Overview",    icon: LayoutDashboard },
+      { href: "/dashboard",   label: "Overview",    icon: LayoutDashboard },
       { href: "/attribution", label: "Attribution", icon: GitMerge },
       { href: "/insights",    label: "Insights",    icon: Lightbulb },
       { href: "/performance", label: "Performance", icon: TrendingUp },
@@ -89,7 +89,7 @@ export function Sidebar() {
         <Link
           href="/upload"
           title={collapsed ? "New Analysis" : undefined}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-[10px] text-sm font-semibold text-white bg-secondary-gradient hover:opacity-90 active:scale-[0.98] transition-all"
+          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-[10px] text-sm font-semibold text-white bg-secondary-gradient btn-primary-lift"
           style={{ boxShadow: "0 2px 8px rgba(37,99,235,0.25)" }}
         >
           <Plus size={15} strokeWidth={2.5} className="shrink-0" />

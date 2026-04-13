@@ -126,7 +126,7 @@ export function ChatPanel() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 flex items-center gap-2 px-5 py-3 rounded-button bg-primary-gradient text-white text-sm font-semibold hover:opacity-90 active:scale-95 transition-all z-40"
+          className="fixed bottom-6 right-6 flex items-center gap-2 px-5 py-3 rounded-button bg-primary-gradient text-white text-sm font-semibold btn-primary-lift z-40"
           style={{ boxShadow: "var(--shadow-overlay)" }}
         >
           <Sparkles size={16} />
@@ -207,7 +207,7 @@ export function ChatPanel() {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask anything about your results…"
                 rows={1}
-                className="flex-1 resize-none text-sm px-4 py-2.5 rounded-xl bg-surface-container-low outline-none text-on-surface placeholder:text-on-surface-variant transition-colors focus:bg-surface-lowest"
+                className="flex-1 resize-none text-sm px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface placeholder:text-on-surface-variant transition-colors focus:bg-surface-lowest focus-ring"
                 style={{
                   minHeight: "40px",
                   maxHeight: "120px",

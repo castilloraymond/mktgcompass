@@ -72,7 +72,7 @@ export function KPICard({
                 <div
                   className="absolute right-0 top-full mt-2 w-64 rounded-[12px] p-4 z-50 text-xs leading-relaxed"
                   style={{
-                    background: "#111827",
+                    background: "var(--tooltip-bg)",
                     boxShadow: "var(--shadow-overlay)",
                   }}
                   onMouseEnter={show}

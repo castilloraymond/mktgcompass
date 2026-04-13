@@ -21,18 +21,17 @@ interface for non-technical marketers. Built as a solo venture and portfolio sho
 - MVP target: 1 week. Ship fast, iterate. Cut scope aggressively.
 - Free tier only. Minimize infrastructure costs ($10-35/mo budget).
 
-## Design System (from Google Stitch mockups)
-Reference the Google Stitch mockups for visual direction. Key design tokens:
-- Primary accent: warm amber/orange (#D97706)
-- Cards: white (#FFFFFF) with light gray backgrounds (#F9FAFB), rounded-xl corners, subtle shadows
-- Dark highlight cards: near-black (#1F2937) for alerts and saturation warnings
-- KPI callouts: large bold numbers with colored delta indicators (green ↑, red ↓)
-- Charts: orange/amber primary, red/crimson secondary, gray baseline
-- AI insights: yellow background (#FEF3C7) cards with sparkle icon
-- Efficiency grades: A+ ELITE (green badge), B OPTIMAL (blue), C SCALING (orange)
-- Typography: Plus Jakarta Sans (display) or DM Sans (body). Clean sans-serif.
-- Component library: shadcn/ui customized to match Stitch amber/orange theme
-- Layout: Sidebar (220px) + main content area + optional chat drawer (360px)
+## Design System
+See `DESIGN_SYSTEM.md` for the canonical design reference. Direction is ChronoTask-inspired:
+light neutral surfaces (`#F7F8FA`/`#FFFFFF`/`#EEF0F4`), DM Sans everywhere, single `#2563EB`
+blue accent, 16px card radius, subtle shadows, single-accent chart palette with amber reserved
+for Paid Search. Tokens live in `frontend/app/globals.css`.
+
+Do NOT revert to the retired navy (`#131b2e`) or warm-brown (`#855300`) directions. Do NOT
+swap in Manrope/Inter/Bricolage/Plus Jakarta — DM Sans is committed.
+
+Layout: Sidebar (260px expanded, 64px collapsed) + main content area (max 1200px) + optional
+chat drawer on the right.
 
 ## Navigation Structure
 ```

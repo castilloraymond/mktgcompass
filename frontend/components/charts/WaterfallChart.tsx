@@ -11,11 +11,14 @@ interface WaterfallChartProps {
   data: WaterfallItem[];
 }
 
+// Values mirror design tokens:
+//   baseline → --on-surface-variant, positive → --primary,
+//   negative → --error, total → --secondary-container
 const TYPE_COLORS: Record<string, string> = {
-  baseline: "#9CA3AF",
+  baseline: "#6B7280",
   positive: "#2563EB",
   negative: "#EF4444",
-  total:    "#1D4ED8",
+  total:    "#3B82F6",
 };
 
 // Build cumulative offsets for a true waterfall

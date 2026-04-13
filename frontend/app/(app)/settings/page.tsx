@@ -16,7 +16,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Demo notice */}
-      <div className="flex items-start gap-3 bg-[#FFFBEB] rounded-card p-4 animate-fade-up" style={{ "--stagger-delay": "60ms" } as React.CSSProperties}>
+      <div className="flex items-start gap-3 bg-surface-warning rounded-card p-4 animate-fade-up" style={{ "--stagger-delay": "60ms" } as React.CSSProperties}>
         <AlertTriangle size={16} className="text-primary mt-0.5 shrink-0" />
         <p className="text-sm text-on-surface-variant">
           <strong className="text-on-surface">Demo mode:</strong> Settings are not persisted. Authentication and data source integrations will be available in the full release.

@@ -1,289 +1,327 @@
 # MktgCompass Design System
-## "The Radiant Curator"
 
-A premium editorial design system for marketing measurement software. Treats every screen as a carefully composed gallery space — structured but alive, data-rich but never cold.
+**Direction:** ChronoTask-inspired. Clean, airy, professional SaaS with warm approachability.
+The goal is to feel like a premium productivity tool that non-technical marketers trust instantly.
 
----
-
-## Quick Reference
-
-| File | Purpose |
-|------|---------|
-| `app/globals.css` | All CSS tokens + Tailwind v4 `@theme` mapping |
-| `tailwind.config.ts` | Minimal v4 config (plugins only — tokens live in CSS) |
-| `components/ui/chart-theme.ts` | Recharts global props + chart palette |
-| `DESIGN_SYSTEM.md` | This document |
+> This is the canonical design reference for MktgCompass. `frontend/app/globals.css` is the
+> source of truth for tokens; this doc explains the *why* and provides component usage.
+> `CLAUDE.md` and `docs/dashboard-planning.md` link back here — do not duplicate guidance.
 
 ---
 
-## 1. Tailwind v4 Architecture
+## 1. Philosophy
 
-**Important:** Tailwind v4 uses CSS-first configuration. There is no `content` array or theme object in `tailwind.config.ts`. All tokens are defined in `app/globals.css` via two mechanisms:
+**Structured clarity with warmth.** Every element should feel intentional, spacious, and
+effortlessly organized. Let data breathe.
 
-1. **`:root` CSS custom properties** — raw design tokens, usable everywhere (including Recharts, inline styles, SVG).
-2. **`@theme inline`** — maps `:root` tokens to Tailwind utility names (`bg-primary`, `text-on-surface`, `font-display`, etc.).
+**Mood:** Professional but not corporate. Friendly but not playful. Premium but not intimidating.
 
-The `inline` modifier is critical: it keeps token values as CSS variable references at runtime rather than resolving them to static values at build time. This means tokens are themeable and can be overridden per-component or per-feature.
+**Core traits**
+- Generous whitespace and padding throughout
+- Soft, rounded containers with subtle shadows
+- Light, neutral backgrounds with small pops of color
+- Card-based layouts with clear visual hierarchy
+- Friendly micro-copy and greeting patterns ("Good morning, Raymond")
+
+**"No-line" surfaces.** Structural separation happens through tonal background shifts, not
+1px borders. The surface stack `#F7F8FA → #FFFFFF → #EEF0F4` produces soft layers the eye reads
+as distinct without adding visual noise. When an accessibility-required border is needed (form
+inputs), use `.border-ghost` — felt, not seen.
+
+**Single-accent discipline.** One blue (`#2563EB`) carries CTAs, active nav, links, and primary
+chart emphasis. Everything else is neutral or semantic (success/warning/danger). The cyan hero
+gradient is **reserved for the marketing landing page only** — do not use it inside the app shell.
 
 ---
 
-## 2. Color System
+## 2. Color Tokens
 
-### Philosophy: "No-Line" Surfaces
+All tokens live in `frontend/app/globals.css:5-88`. Tailwind v4 reads them via `@theme inline`
+(same file, lines 91-143).
 
-Structural separation is achieved **entirely through background color shifts**, never through 1px borders. The surface hierarchy produces ~2% brightness steps that the eye reads as distinct layers:
+### Base surfaces
 
-```
-surface (#F7F9FB)           ← page background
-  └─ surface-lowest (#FFF)  ← cards, inputs, elevated elements
-       └─ surface-container (#ECEEF0)  ← nested blocks, code snippets
-```
-
-### Full Color Token Reference
-
-| CSS Variable | Hex | Tailwind Utility | Usage |
+| CSS variable | Hex | Tailwind utility | Usage |
 |---|---|---|---|
-| `--primary` | `#855300` | `bg-primary` / `text-primary` | Primary actions, active states |
-| `--primary-container` | `#F59E0B` | `bg-primary-container` | Gradient end, highlights |
-| `--on-primary` | `#FFFFFF` | `text-on-primary` | Text on primary bg |
-| `--secondary` | `#B90538` | `bg-secondary` / `text-secondary` | Emotive callouts, secondary CTAs |
-| `--secondary-container` | `#DC2C4F` | `bg-secondary-container` | Secondary fills |
-| `--secondary-fixed` | `#FFDDE7` | `bg-secondary-fixed` | Badge backgrounds (soft coral) |
-| `--on-secondary-fixed` | `#3E0011` | `text-on-secondary-fixed` | Badge text |
-| `--surface` | `#F7F9FB` | `bg-surface` | Page base |
-| `--surface-lowest` | `#FFFFFF` | `bg-surface-lowest` | Cards, inputs |
-| `--surface-low` | `#F2F4F6` | `bg-surface-low` | Hover states, subtle recesses |
-| `--surface-container` | `#ECEEF0` | `bg-surface-container` | Nested sections |
-| `--surface-high` | `#E4E6E8` | `bg-surface-high` | Secondary button bg |
-| `--surface-dim` | `#D8DADC` | `bg-surface-dim` | Disabled fills |
-| `--on-surface` | `#191C1E` | `text-on-surface` | Primary text |
-| `--on-surface-variant` | `#41484D` | `text-on-surface-variant` | Secondary text, axis labels |
-| `--outline` | `#71787D` | `border-outline` | Medium-contrast borders |
-| `--outline-variant` | `#D8C3AD` | `border-outline-variant` | Ghost border base |
-| `--success` | `#F59E0B` | `text-success` | Success states (amber, not green) |
-| `--error` | `#BA1A1A` | `text-error` | Error states |
-| `--info` | `#0369A1` | `text-info` | Informational states |
+| `--surface` | `#F7F8FA` | `bg-surface` | Page background, app shell |
+| `--surface-lowest` | `#FFFFFF` | `bg-surface-lowest` | Cards, elevated content, top bar |
+| `--surface-low` | `#EEF0F4` | `bg-surface-low` | Hover states on rows/cells |
+| `--surface-container` | `#E5E7EB` | `bg-surface-container` | Dividers, kbd badges, inactive fills |
+| `--surface-variant` | `#EFF6FF` | `bg-surface-variant` | AI insight tinted surfaces |
+| `--surface-warning` | `#FFFBEB` | `bg-surface-warning` | Amber callout cards (demo banner notices, suggestions) |
 
-### Ghost Border
+### Text
 
-When a structural border is accessibility-required (e.g., input fields), use the Ghost Border pattern. Felt, not seen:
+| CSS variable | Hex | Tailwind utility | Usage |
+|---|---|---|---|
+| `--on-surface` | `#1A1A1A` | `text-on-surface` | Headings, primary labels, important numbers |
+| `--on-surface-variant` | `#6B7280` | `text-on-surface-variant` | Descriptions, axis labels, metadata |
+| `--outline` | `#E5E7EB` | `border-outline` | Card borders, dividers, section edges |
+| `--outline-variant` | `#F0F1F3` | `border-outline-variant` | Inner dividers, subtle separators |
 
-```css
-border: 1px solid color-mix(in srgb, var(--outline-variant) 20%, transparent);
-```
+### Accent & primary
 
-Use the `.border-ghost` utility class in `globals.css`. Focus state automatically upgrades to a 2px `--primary` border.
+| CSS variable | Hex | Tailwind utility | Usage |
+|---|---|---|---|
+| `--primary` / `--accent-primary` | `#2563EB` | `bg-primary` / `text-primary` | CTAs, links, active nav, primary chart series |
+| `--accent-primary-light` | `#EFF6FF` | — | Active nav background, badge fill |
+| `--secondary-container` | `#3B82F6` | `bg-secondary-container` | Gradient end stop |
+
+### Semantic
+
+| CSS variable | Hex | Tailwind utility | Usage |
+|---|---|---|---|
+| `--success` / `--grade-elite` | `#10B981` | `text-success` / `text-grade-elite` | Positive metrics, A+ grade |
+| `--grade-optimal` | `#2563EB` | `text-grade-optimal` | B grade, optimal efficiency |
+| `--accent-warning` / `--grade-scaling` | `#F59E0B` | `text-grade-scaling` | Caution, C grade, amber emphasis |
+| `--error` / `--grade-poor` | `#EF4444` | `text-error` / `text-grade-poor` | Negative metrics, errors, D grade |
+| `--info` | `#2563EB` | `text-info` | Informational states (same as primary by design) |
 
 ### Gradients
 
-Primary CTA gradient flows warm-to-deep (upper-left light, lower-right dark):
-
 ```css
-background: linear-gradient(135deg, var(--primary-container) 0%, var(--primary) 100%);
-/* or use the utility: */
-className="bg-primary-gradient"
+--gradient-cta:  linear-gradient(135deg, #2563EB, #3B82F6);
+--gradient-hero: linear-gradient(135deg, #38BDF8 0%, #06B6D4 50%, #0EA5E9 100%);
 ```
 
-### Glassmorphism
+- `.bg-primary-gradient` → `--gradient-cta`. Used on primary buttons (`New Analysis`, `Apply`, landing CTAs) and avatar chips.
+- `--gradient-hero` → **marketing landing page only.** Hero backdrop and feature showcase accents. Never use in the dashboard.
 
-For floating navigation or modals: `surface-lowest` at 80% opacity + 20px blur.
+### Tooltip
 
-```css
-/* or use the utility: */
-className="glass"
-```
+| CSS variable | Hex | Usage |
+|---|---|---|
+| `--tooltip-bg` | `#111827` | Dark popover background for KPI tooltips and Recharts tooltips. White text. |
 
 ---
 
 ## 3. Typography
 
-### Font Pairing
+### Font stack
 
-| Role | Family | Rationale |
-|---|---|---|
-| **Display / Headline** | Bricolage Grotesque | Geometric quirk + professional weight. Tight tracking at large sizes reads as expert craftsmanship. |
-| **Body / UI / Title** | Plus Jakarta Sans | Warmly humanist sans — legible at 12px, breathing room at body size. Not Inter. |
-| **Data / Mono** | JetBrains Mono | Tabular numbers for metric alignment. Clear distinction between data values and labels. |
+All three are loaded via `next/font/google` in `frontend/app/layout.tsx` (zero layout shift,
+no external request). The CSS variables below point at the next/font-generated values.
 
-Fonts load via Google Fonts in `globals.css`. **In production, migrate to `next/font/google`** (zero layout shift, no external request).
+```css
+--font-display: var(--font-display);  /* DM Sans — headings, display, UI */
+--font-body:    var(--font-body);     /* DM Sans — body, labels */
+--font-mono:    var(--font-mono);     /* JetBrains Mono — numbers, kbd */
+```
 
-### Type Scale
+**DM Sans** — geometric, clean, slightly warm. Excellent weight range (400/500/600/700). Used
+for both display and body because its optical sizes (9–40) adapt beautifully across the scale.
 
-| Token | Size | Line Height | Letter Spacing | Usage |
-|---|---|---|---|---|
-| `display-lg` | 3.5rem / 56px | 1.10 | −0.02em | Hero headers, page titles |
-| `headline-md` | 1.75rem / 28px | 1.15 | −0.02em | Section headers, card titles |
-| `title-lg` | 1.375rem / 22px | 1.30 | −0.01em | Modal headers, subsection titles |
-| `body-md` | 0.875rem / 14px | 1.60 | 0 | All reading copy |
-| `label-md` | 0.75rem / 12px | 1.40 | +0.01em | Metadata, tags, axis labels |
+**JetBrains Mono** — tabular figures for metric alignment. Use `font-mono` + `font-tabular`
+together for all currency, percentages, and counts.
 
-Use as Tailwind utilities: `text-display-lg`, `text-headline-md`, etc.
+### Type scale
 
-### Font Weight Conventions
+Defined in `globals.css:187-194`. Use as Tailwind utility classes.
 
-| Weight | Class | When |
-|---|---|---|
-| 400 Regular | `font-normal` | Body copy, descriptions |
-| 500 Medium | `font-medium` | UI labels, nav items, table headers |
-| 600 Semibold | `font-semibold` | Card titles, modal headers, badges |
-| 700 Bold | `font-bold` | Hero text, emphasis, numeric callouts |
+| Class | Size | Line-height | Letter-spacing | Weight | When |
+|---|---|---|---|---|---|
+| `.text-display-lg` | 3.5rem / 56px | 1.10 | -0.02em | 700 | Landing hero headline |
+| `.text-headline-lg` | 2.0rem / 32px | 1.15 | -0.02em | 700 | Section heroes |
+| `.text-headline-md` | 1.75rem / 28px | 1.15 | -0.015em | 700 | Page titles (`Attribution Explorer`) |
+| `.text-title-lg` | 1.125rem / 18px | 1.40 | -0.01em | 600 | Card titles, section headers |
+| `.text-body-md` | 0.9375rem / 15px | 1.60 | 0 | 400 | Paragraphs, descriptions |
+| `.text-body-sm` | 0.8125rem / 13px | 1.50 | 0 | 400 | Table cells, secondary info |
+| `.text-label-md` | 0.75rem / 12px | 1.40 | 0.02em | 400 | Metadata, inline badges |
+| `.text-overline` | 0.6875rem / 11px | 1.20 | 0.08em | 600 | KPI labels, sidebar section headers, uppercase |
 
-### Bricolage Grotesque Sizing Note
+### Rules
 
-Large Bricolage Grotesque has unique character heights. **Trust your eye over the grid for vertical centering** at display sizes — optical centering will look better than mathematical centering.
+- Headings: `text-on-surface`, bold or semibold. Never gray.
+- Body: `text-on-surface-variant` for descriptions, `text-on-surface` for emphasis.
+- Numbers: always `font-mono font-tabular` for column alignment.
+- Large metric values (`$4.2M`): `text-[2.25rem] font-bold font-display` with `-0.02em` tracking.
+- Delta indicators (`+12.5%`): `text-[0.8125rem] font-medium`, colored by sentiment.
 
 ---
 
 ## 4. Spacing
 
-Base unit: **4px**. All spacing tokens are multiples.
+Base unit: **4px**. The `--space-*` tokens mirror Tailwind's default scale and exist as
+reference anchors — day-to-day code uses Tailwind utilities (`p-6`, `gap-4`, etc.).
 
-| Token | Value | Common Use |
+```css
+--space-1:  4px;   --space-2:  8px;   --space-3: 12px;
+--space-4: 16px;   --space-5: 20px;   --space-6: 24px;
+--space-8: 32px;   --space-10: 40px;  --space-12: 48px;
+--space-16: 64px;
+```
+
+### Component padding standards
+
+| Component | Padding | Tailwind |
 |---|---|---|
-| `space-1` / `p-1` | 4px | Icon padding, micro gaps |
-| `space-2` / `p-2` | 8px | Badge padding, tight stacks |
-| `space-3` / `p-3` | 12px | Input inner padding (vertical) |
-| `space-4` / `p-4` | 16px | Input inner padding (horizontal), button padding |
-| `space-6` / `p-6` | 24px | Card padding |
-| `space-8` / `p-8` | 32px | Section spacing |
-| `space-16` / `p-16` | 64px | Page horizontal padding (desktop) |
+| Card | 24px all sides | `p-6` |
+| Card (dense) | 20px all sides | `p-5` |
+| Button (base) | 10px / 20px | `px-5 py-2.5` |
+| Button (sm) | 6px / 12px | `px-3 py-1.5` |
+| Input | 10px / 14px | `px-3.5 py-2.5` |
+| Badge | 2px / 10px | `px-2.5 py-0.5` |
+| Sidebar nav item | 10px / 12px, 40px height | `px-3 py-2.5` |
+| Page horizontal | 32px | `px-8` |
 
-### Component Padding Standards
+### Layout widths
 
-| Component | Padding |
+| Context | Max width |
 |---|---|
-| Card | `p-6` (24px all sides) |
-| Button (base) | `px-4 py-2` (16px / 8px) |
-| Button (sm) | `px-3 py-1.5` (12px / 6px) |
-| Input | `px-4 py-2.5` with `h-10` (40px total height) |
-| Badge | `px-2.5 py-0.5` (10px / 2px) |
+| Dashboard pages (Overview, Attribution, Performance) | `max-w-[1200px]` |
+| Insights page | `max-w-[900px]` |
+| Settings page | `max-w-[680px]` |
+| Marketing landing sections | `max-w-[1200px]` with section-level asymmetry allowed |
 
 ---
 
 ## 5. Components
 
-### Buttons
+### Card
 
-| Variant | Background | Text | Border | Radius |
-|---|---|---|---|---|
-| **Primary** | `bg-primary-gradient` | White | None | `radius-button` (12px) |
-| **Secondary** | `bg-surface-high` | `text-primary` | None | `radius-button` |
-| **Tertiary / Ghost** | Transparent (hover: `primary` at 8%) | `text-primary` | None | `radius-button` |
-| **Destructive** | `bg-error-container` | `text-error` | None | `radius-button` |
+```
+bg-surface-lowest
+border: 1px solid var(--outline)
+rounded-card         (16px)
+shadow: var(--shadow-float)
+padding: p-6         (24px)
+```
+
+On hover (interactive cards): `shadow-float → shadow-hover`, optional `translateY(-1px)`.
+Card titles use `.text-title-lg`. No colored borders — always neutral gray.
+
+### Button
+
+| Variant | Classes |
+|---|---|
+| **Primary** | `bg-primary-gradient text-white rounded-[10px] px-5 py-2.5 font-semibold text-[0.875rem] btn-primary-lift` |
+| **Secondary** | `bg-surface-lowest text-on-surface border border-outline rounded-[10px] px-5 py-2.5 font-medium hover:bg-surface-low` |
+| **Ghost** | `text-primary rounded-[10px] px-4 py-2 font-medium hover:bg-primary/5` |
+| **Destructive** | `bg-error/10 text-error rounded-[10px] px-5 py-2.5 font-semibold hover:bg-error/15` |
 
 Height: `h-10` (40px) for base, `h-8` (32px) for sm.
 
-### Cards
+`.btn-primary-lift` (defined in `globals.css`) adds the ChronoTask-style hover micro-interaction:
+`translateY(-1px)` + a soft colored shadow `0 4px 12px rgba(37, 99, 235, 0.3)`.
+
+### Badge
 
 ```
-Background:    bg-surface-lowest (#FFF)
-Border:        none (tonal separation via parent surface-low bg)
-Border Radius: rounded-card (16px)
-Shadow:        shadow-float (ambient, 5% opacity)
-Padding:       p-6 (24px)
+px-2.5 py-0.5
+rounded-[6px]        (radius-badge)
+font-semibold text-[11px] uppercase tracking-wider
 ```
 
-On hover (interactive cards): transition background `surface-lowest → surface-low`.
+Color variants by context:
+- **Info / Elite / Optimal** → `bg-accent-primary-light text-primary`
+- **Success** → `bg-success/10 text-grade-elite`
+- **Warning** → `bg-surface-warning text-grade-scaling`
+- **Danger** → `bg-error/10 text-error`
+- **Neutral / Coming Soon** → `bg-surface-container text-on-surface-variant`
 
-### Inputs
-
-```
-Background:    bg-surface-lowest
-Border:        .border-ghost (outline-variant at 20%)
-Focus:         border-primary, 2px
-Border Radius: rounded-input (8px)
-Height:        h-10 (40px)
-Label:         text-label-md, 8px above field
-```
-
-### Badges — "The Radiant Badge"
-
-Primary badge variant: `bg-secondary-fixed` + `text-on-secondary-fixed`. The contrast between soft coral and deep crimson creates the high-fashion moment.
+### Input
 
 ```
-Padding:       px-2.5 py-0.5
-Border Radius: rounded-badge (9999px)
-Font:          text-label-md font-semibold
+bg-surface-lowest
+border: 1px solid var(--outline)
+rounded-input        (10px)
+h-10 px-3.5
+text-body-md
 ```
 
-### Data Tables
+Use the `.focus-ring` utility for the 2px primary border + 3px translucent blue halo on focus.
+Labels sit above the field at `.text-label-md`, 8px gap.
+
+### Data table
 
 | Property | Value |
 |---|---|
 | Row height | `h-12` (48px) |
-| Hover | `bg-surface-low` |
-| Dividers | **None.** Use `py-3` spacing between rows instead. |
-| Header | `text-label-md font-medium text-on-surface-variant` |
-| Cell | `text-body-md text-on-surface` |
-| Numeric cells | `font-mono` (tabular numbers) |
+| Row divider | `divide-y divide-outline-variant` (very subtle) |
+| Row hover | `bg-surface-low` |
+| Header | `text-overline text-on-surface-variant` |
+| Cell | `text-body-sm text-on-surface` |
+| Numeric cells | `font-mono font-tabular`, right-aligned |
+
+No outer table border.
+
+### Progress bar
+
+```
+h-2 rounded-full bg-surface-container overflow-hidden
+  └─ filled div: h-full rounded-full bg-primary (or grade color)
+```
+
+Height: 8px. Radius: fully rounded (`rounded-full`). Track: `--surface-container`. Fill
+animates width on mount via a `transition-all duration-slow ease-spring`.
+
+### Donut / ring chart
+
+- Thick stroke (12–16px)
+- Multi-segment using chart channel palette (see §9)
+- Center text: `.text-headline-md font-display`
+- Legend: inline below, caption-size with colored dots
 
 ---
 
-## 6. Elevation & Depth
+## 6. Elevation
 
-### The Layering Principle
-
-Three modes of depth, in order of preference:
-
-1. **Tonal shift** — background color step (always use first)
-2. **Ambient shadow** — `shadow-float` for floating elements
-3. **Glassmorphism** — `.glass` for overlays above complex content
-
-### Shadow Reference
+Three modes, preferred in order:
+1. **Tonal shift** — background color step (first choice)
+2. **Ambient shadow** — `--shadow-float` for floating elements
+3. **Glassmorphism** — only for marketing hero overlays above gradient backdrops
 
 ```css
---shadow-float:   0px 12px 32px 0px rgb(25 28 30 / 0.05);   /* cards, dropdowns */
---shadow-overlay: 0px 20px 48px 0px rgb(25 28 30 / 0.08);   /* modals, sheets */
+--shadow-float:   0px 1px 3px rgba(0,0,0,0.04), 0px 1px 2px rgba(0,0,0,0.03);  /* cards, dropdowns */
+--shadow-hover:   0px 4px 16px rgba(0,0,0,0.08);                                /* card hover */
+--shadow-overlay: 0px 4px 12px rgba(0,0,0,0.08), 0px 2px 4px rgba(0,0,0,0.04); /* modals, tooltips */
 ```
 
-**Never use `shadow-md`, `shadow-lg` etc. from Tailwind defaults for product UI.** They use pure black. Always use `shadow-float` or `shadow-overlay`.
+**Never use Tailwind's default `shadow-md` / `shadow-lg`** — they use pure black and feel
+heavy. Always use these three.
 
 ---
 
 ## 7. Motion
 
-### Easing
-
-One primary easing curve throughout the product:
+One primary easing curve:
 
 ```css
---ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+--ease-spring: cubic-bezier(0.16, 1, 0.3, 1);  /* fast-start, gentle overshoot */
+--ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1); /* for exits */
 ```
 
-This produces a fast-start, gently-overshooting spring feel. Used by Linear and Raycast. Signals responsiveness and care.
-
-For exit/collapse animations, use `--ease-out`.
-
-### Duration Standards
+Durations:
 
 | Token | Value | When |
 |---|---|---|
-| `instant` | 0ms | Checkbox/radio toggles, direct selections |
-| `fast` | 100ms | Hover states, icon swaps, small reveals |
-| `base` | 200ms | Most transitions (dropdowns, menus, tooltip) |
-| `slow` | 350ms | Page loads, modal enters, chart data reveals |
+| `--duration-fast` | 150ms | Hover, icon swap |
+| `--duration-base` | 200ms | Dropdowns, menus, tooltip |
+| `--duration-slow` | 300ms | Page loads, modal enter, chart data reveal |
 
-### What Gets Animated
+### Page load stagger
 
-✅ Dropdown/menu enter+exit · Modal enter+exit · Hover state fills · Skeleton → content · Chart data loads · Toast notifications
-
-❌ Scrolling · Resize events · Checkbox/radio state · Tab switches (instant) · Table row sorting
-
-### Page Load Strategy
-
-Staggered fade-up: elements enter with `opacity: 0 → 1` and `translateY: 16px → 0` using `--ease-spring` at `--duration-slow`. Apply cascade via `--stagger-delay` CSS variable:
+Elements fade up with `opacity: 0 → 1` and `translateY: 12px → 0`. Use `.animate-fade-up`
+with a `--stagger-delay` CSS variable:
 
 ```tsx
-// Example stagger
-children.map((child, i) => (
-  <div
-    className="animate-fade-up"
-    style={{ "--stagger-delay": `${i * 60}ms` } as React.CSSProperties}
-  >
-    {child}
-  </div>
-))
+<div
+  className="animate-fade-up"
+  style={{ "--stagger-delay": `${index * 60}ms` } as React.CSSProperties}
+>
+  {children}
+</div>
 ```
+
+Typical cascade: 0ms → 70ms → 140ms → 210ms for a KPI row, then 280ms/340ms for the charts
+below.
+
+### What gets animated
+
+✅ Dropdown/menu enter+exit · Modal · Tooltip · Card hover lift · Chart on mount (bars grow,
+lines draw, numbers count up) · Toast · Skeleton → content
+
+❌ Scrolling · Resize · Checkbox/radio state · Tab switches · Table row sorting
 
 ---
 
@@ -293,59 +331,126 @@ children.map((child, i) => (
 
 | Size | px | When |
 |---|---|---|
-| `size-3.5` | 14px | Inline with text (body/label context) |
-| `size-4` | 16px | Default UI (buttons, inputs, form elements) |
+| `size-3.5` | 14px | Inline with body copy |
+| `size-4` | 16px | Default UI (buttons, inputs, badges) |
 | `size-[18px]` | 18px | Primary nav items |
 | `size-5` | 20px | Card feature icons |
-| `size-6` | 24px | Section headers, empty state illustrations |
+| `size-6` | 24px | Section headers, illustrations |
 
-**With labels:** Always in buttons, nav items, form helper text.
+Stroke width: `strokeWidth={1.5}` for UI, `strokeWidth={1.25}` at 20px+ for a refined look.
 
-**Without labels:** Only when meaning is universally unambiguous: `X` (close), `Search`, `+` (add), `ChevronDown` (expand).
-
-**Stroke width:** Use Lucide's default `strokeWidth={1.5}` for body/UI size. Reduce to `strokeWidth={1.25}` at 20px+ for a refined, editorial look.
+Landing-page value prop icons sit in a `size-12` circle container with `bg-surface` background.
 
 ---
 
-## 9. Chart Styling
+## 9. Chart styling
 
-See `components/ui/chart-theme.ts` for Recharts-ready config objects.
+Implemented with Recharts. All charts share these rules:
 
-### Key Decisions
+- **Grid:** horizontal lines only, stroke `--outline-variant`. No vertical lines.
+- **Axes:** no axis lines, no tick marks. Text-only in `text-on-surface-variant`, 12px.
+- **Tooltip:** `bg-[var(--tooltip-bg)]`, white text, `rounded-[12px]`, `shadow-overlay`, 12px padding. Data values in `font-mono font-tabular`.
+- **Confidence intervals:** series color at 15% opacity fill, no stroke — atmospheric, not hard bounds.
+- **Cursor:** dashed `outline` vertical line on hover. Subtle.
+- **Loading:** `.animate-shimmer` on a container sized to match chart. Never placeholder data.
 
-**Grid:** Horizontal lines only, `surface-container` color. No vertical lines — they add visual noise on time-series data.
+### Channel palette
 
-**Axes:** No axis lines or tick marks. Text-only in `on-surface-variant`. This keeps the chart feeling editorial rather than like a spreadsheet.
+Canonical in `frontend/lib/demo-data.ts::CHART_COLORS`. Blue-led, single-accent discipline:
 
-**Tooltip:** `surface-lowest` background, `shadow-overlay`, `radius-button` corners. Data values in `font-mono` for alignment.
+```ts
+primary:   "#2563EB",   // accent blue (Organic, primary series)
+secondary: "#F59E0B",   // amber (Paid Search — the one exception)
+tertiary:  "#10B981",   // green (Growth / Organic Growth)
+info:      "#06B6D4",   // cyan (Brand)
+baseline:  "#9CA3AF",   // gray (baseline contribution)
+muted:     "#E5E7EB",
+channels: [
+  "#2563EB", "#F59E0B", "#10B981", "#06B6D4",
+  "#7C3AED", "#DB2777", "#0891B2", "#65A30D",
+],
+```
 
-**Confidence Intervals (MMM):** Series color at 15% opacity fill, no stroke. They should feel like "atmospheric probability" rather than hard bounds.
-
-**Cursor:** Dashed `outline-variant` vertical line on hover. Subtle — doesn't compete with data.
-
-### Loading State
-
-Use `.animate-shimmer` on a container sized to match the chart. This keeps the layout stable and avoids CLS.
-
-### Empty State
-
-Show icon + message + sub-message. No charts, no placeholder data (never fake data in a data product — it erodes trust).
+The only non-blue channel color in the default rotation is amber (`#F59E0B`) for Paid Search.
+All other channels fall back to supporting hues that harmonize with the primary blue.
 
 ---
 
-## 10. Do's and Don'ts
+## 10. Landing page patterns
+
+The marketing landing page lives at `frontend/app/(marketing)/page.tsx` with its own light
+layout (no sidebar). Structural pattern, in order:
+
+### Hero
+- Overline pill badge (`AI-Powered MMM`)
+- Display heading (`.text-display-lg`) — 2 lines, `-0.02em` tracking
+- Subheading (`.text-body-md text-on-surface-variant`, `max-w-[600px]`)
+- CTA row: Primary button (large, `h-12`) + secondary ghost
+- Below: floating dashboard screenshot card on top of a soft `--gradient-hero` backdrop.
+  Use `rounded-[20px] shadow-overlay`.
+
+### Value props row
+- 3 columns, no cards, evenly spaced
+- Each: icon in `size-12 rounded-full bg-surface-low` + heading + one-line description
+- Heading: `.text-title-lg`, description: `.text-body-md text-on-surface-variant`
+
+### Feature showcase sections
+- Alternating screenshot/text pairs (screenshot left/right reverses between sections)
+- Screenshot: `rounded-[20px] shadow-overlay`, optional gradient backdrop
+- Text side: `.text-headline-md` + `.text-body-md` + bullet list
+- Backgrounds alternate between white and `bg-surface`
+
+### Bento grid
+- 2×2 grid with mixed heights — one tall card, two short, one wide
+- Each card: `rounded-[20px] p-8 border border-outline bg-surface-lowest shadow-float`
+- Contains: small UI preview SVG + title + one-line description
+- Titles: *Automated Attribution · AI-Powered Insights · Budget Optimization · One-Click Reports*
+
+### CTA footer
+- Large heading, primary button, subtle background
+
+---
+
+## 11. Responsive breakpoints
+
+```css
+sm: 640px   md: 768px   lg: 1024px   xl: 1280px
+```
+
+- **< 768px:** Sidebar collapses to off-canvas drawer. Single-column card layouts. Smaller type scale.
+- **768–1024px:** Sidebar icon-only (64px). 2-column card grids.
+- **1024+:** Full sidebar (260px). 3–4 column grids. Full type scale.
+
+---
+
+## 12. Do's and Don'ts
 
 ### Do
-
-- Use asymmetrical margins in editorial layouts (e.g., left: 4rem, right: 6rem).
-- Use Amber (`--success`) for positive/success states to maintain the warm personality.
-- Use `font-mono` with `font-feature-settings: "tnum" 1` for all metric numbers.
-- Let tonal surface shifts do structural work — no divider lines in lists.
+- Use tonal surface shifts for structure. Dividers only when necessary.
+- Use `font-mono font-tabular` for every numeric value.
+- Keep a single blue accent. Let amber appear only for Paid Search.
+- Reach for `--shadow-float` / `--shadow-overlay` — never Tailwind's defaults.
+- Apply `.animate-fade-up` with staggered delays on page load.
 
 ### Don't
+- Don't revert to the retired navy (`#131b2e`) or warm-brown (`#855300`) directions.
+- Don't use Manrope, Inter, Bricolage Grotesque, or Plus Jakarta Sans — those were earlier
+  explorations. DM Sans is the committed choice.
+- Don't use hardcoded hex values in components. Reference tokens.
+- Don't put the hero cyan gradient (`--gradient-hero`) inside the app shell — marketing only.
+- Don't use 1px neutral borders to section content when a tonal surface shift will do.
 
-- Don't use 100% opaque gray borders for sectioning.
-- Don't use Tailwind's default `shadow-md` / `shadow-lg` in product UI.
-- Don't use standard dividers between list items — add spacing instead.
-- Don't use green for success states — it breaks the warm palette personality.
-- Don't use `font-sans` (Geist) — it was removed. Use `font-body` or `font-display`.
+---
+
+## Canonical file map
+
+| File | Purpose |
+|---|---|
+| `frontend/app/globals.css` | All design tokens + Tailwind `@theme` mapping. Source of truth. |
+| `frontend/app/layout.tsx` | `next/font/google` wiring for DM Sans + JetBrains Mono |
+| `frontend/lib/demo-data.ts` | `CHART_COLORS` palette |
+| `frontend/components/layout/*` | Sidebar, TopBar, ChatPanel, DemoBanner |
+| `frontend/components/cards/*` | KPICard, InsightCard |
+| `frontend/components/charts/*` | WaterfallChart, SaturationCurve, EfficiencyMatrix, BudgetAllocator |
+| `frontend/components/marketing/*` | Hero, ValueProps, FeatureShowcase, BentoGrid (landing only) |
+| `DESIGN_SYSTEM.md` | This document |
