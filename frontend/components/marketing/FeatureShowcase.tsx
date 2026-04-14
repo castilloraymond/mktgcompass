@@ -176,7 +176,7 @@ export function BudgetVisual() {
           className="text-[10px] font-bold px-2 py-1 rounded"
           style={{ background: "var(--accent-primary-light)", color: "var(--primary)" }}
         >
-          +12.4% ROAS
+          +14.2% ROI
         </div>
       </div>
       {bars.map((b) => (

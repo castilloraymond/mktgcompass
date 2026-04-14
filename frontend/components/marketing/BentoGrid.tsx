@@ -43,7 +43,7 @@ export function BentoGrid() {
           <BentoCard
             icon={Target}
             title="Budget Optimization"
-            body="Get a reallocation plan that maximizes ROAS across channels, with saturation curves baked in."
+            body="Get a reallocation plan that maximizes incremental ROI across channels, with Hill saturation curves baked in."
           >
             <BudgetMiniViz />
           </BentoCard>

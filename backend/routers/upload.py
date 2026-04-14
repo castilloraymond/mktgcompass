@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import io
 import uuid
 from datetime import datetime, timezone
@@ -34,6 +36,9 @@ async def upload_csv(file: UploadFile, background_tasks: BackgroundTasks) -> Upl
 
     job_id = str(uuid.uuid4())
     created_at = datetime.now(timezone.utc).isoformat()
-    await create_job(job_id, created_at)
+    data_hash = hashlib.md5(contents).hexdigest()
+    csv_b64 = base64.b64encode(contents).decode()
+
+    await create_job(job_id, created_at, data_hash=data_hash, csv_data=csv_b64)
 
     return UploadResponse(job_id=job_id, validation=validation)

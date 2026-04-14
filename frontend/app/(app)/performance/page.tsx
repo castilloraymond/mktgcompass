@@ -22,10 +22,10 @@ export default function PerformancePage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-4">
-        <KPICard label="Total Revenue"       value={formatCurrency(overview.total_revenue, true)}   delta={formatPercent(overview.total_revenue_delta)} deltaType="positive" staggerIndex={0} />
-        <KPICard label="Blended ROAS"        value={formatMultiple(overview.blended_roas)}           delta="vs 3.50 target"                              deltaType="positive" staggerIndex={1} />
-        <KPICard label="Weighted CPA"        value={formatCurrency(overview.weighted_cpa)}           delta={formatPercent(overview.weighted_cpa_delta)}  deltaType="positive" staggerIndex={2} />
-        <KPICard label="Incrementality Lift" value={`${overview.incrementality_lift}%`}             delta="high confidence"                             deltaType="positive" staggerIndex={3} />
+        <KPICard label="Total Revenue"        value={formatCurrency(overview.total_revenue, true)}   delta={formatPercent(overview.total_revenue_delta)} deltaType="positive" staggerIndex={0} />
+        <KPICard label="Incremental ROI"      value={formatMultiple(overview.incremental_roi)}        delta={`90% CI: [${formatMultiple(overview.incremental_roi_ci[0])}, ${formatMultiple(overview.incremental_roi_ci[1])}]`} deltaType="positive" staggerIndex={1} />
+        <KPICard label="Model Fit (R²)"       value={overview.model_r_squared.toFixed(2)}            delta="MAPE 2.1%"                                                      deltaType="positive" staggerIndex={2} />
+        <KPICard label="Incremental Revenue"  value={formatCurrency(overview.incremental_revenue, true)} delta={`90% CI: [${formatCurrency(overview.incremental_revenue_ci[0], true)}, ${formatCurrency(overview.incremental_revenue_ci[1], true)}]`} deltaType="positive" staggerIndex={3} />
       </div>
 
       {/* Budget Lab */}
@@ -51,9 +51,9 @@ export default function PerformancePage() {
             <h3 className="text-sm font-semibold text-on-surface mb-3">How This Works</h3>
             <ul className="space-y-3 text-sm text-on-surface-variant">
               {[
-                "The MMM model learned each channel's saturation curve from your historical data.",
-                "The budget optimizer finds the allocation that maximizes projected revenue given your total budget.",
-                "Confidence interval shows model uncertainty — wider = less data for that channel.",
+                "The Meridian model learned each channel's Hill curve (response function) from your historical data.",
+                "The budget optimizer finds the allocation that maximizes projected incremental outcome given your total budget.",
+                "The credible interval shows model uncertainty — wider bands mean less data for that channel.",
                 "Results assume your marketing mix and market conditions stay similar.",
               ].map((t, i) => (
                 <li key={i} className="flex items-start gap-2">
@@ -75,14 +75,14 @@ export default function PerformancePage() {
               +{budget_optimization.projected_lift_pct}%
             </div>
             <p className="text-xs text-on-surface-variant mt-1">
-              {budget_optimization.confidence_interval} confidence
+              {budget_optimization.credible_interval}
             </p>
             <p className="text-xs text-on-surface-variant mt-3">
               Equivalent to approximately{" "}
               <strong className="text-on-surface">
                 {formatCurrency(overview.total_revenue * budget_optimization.projected_lift_pct / 100, true)}
               </strong>{" "}
-              in additional revenue.
+              in additional incremental revenue.
             </p>
           </div>
         </div>

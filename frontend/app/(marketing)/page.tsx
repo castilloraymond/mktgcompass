@@ -19,10 +19,10 @@ export default function MarketingHomePage() {
         <FeatureShowcase
           eyebrow="Automated attribution"
           title="See what's actually pulling its weight"
-          body="MktgCompass runs Google Meridian — the same Bayesian MMM engine used by enterprise teams — and surfaces a plain-English efficiency grade for every channel. No more guessing whether Meta is earning its keep."
+          body="MktgCompass runs Google Meridian — the same Bayesian MMM engine used by enterprise teams — and surfaces incremental ROI with efficiency grades for every channel. No more guessing whether Meta is earning its keep."
           bullets={[
-            "Causal contribution, not last-click fiction",
-            "Saturation curves show where extra spend stops working",
+            "Incremental ROI per channel with 90% credible intervals",
+            "Hill saturation curves show where extra spend hits diminishing returns",
             "Letter grades you can explain in a stand-up",
           ]}
           visual={<AttributionVisual />}
@@ -46,10 +46,10 @@ export default function MarketingHomePage() {
         <FeatureShowcase
           eyebrow="Budget optimization"
           title="A smarter plan for next quarter"
-          body="Get a reallocation recommendation that maximizes revenue across your current mix — with diminishing returns built in, so you don't blow past the point where extra dollars stop working."
+          body="Get a reallocation recommendation that maximizes incremental revenue across your current mix — powered by Meridian's budget optimizer with Hill saturation curves built in."
           bullets={[
-            "One-click reallocation suggestions with projected ROAS lift",
-            "Respects channel-level minimums and constraints",
+            "One-click reallocation with projected incremental ROI lift",
+            "Respects channel-level Hill saturation and diminishing returns",
             "Show before/after scenarios to stakeholders",
           ]}
           visual={<BudgetVisual />}

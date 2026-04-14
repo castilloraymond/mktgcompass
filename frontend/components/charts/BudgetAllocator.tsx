@@ -72,8 +72,8 @@ export function BudgetAllocator({ data }: BudgetAllocatorProps) {
           <p className="text-sm font-semibold text-on-surface">AI Recommendation</p>
           <p className="text-sm text-on-surface-variant mt-1">
             Shifting <strong>{formatCurrency(7_150)}</strong> from Meta Ads to Google Search and Email
-            is projected to improve total revenue by{" "}
-            <strong className="text-grade-elite">{data.projected_lift_pct}%</strong>.
+            is projected to improve incremental revenue by{" "}
+            <strong className="text-grade-elite">+{data.projected_lift_pct}%</strong>.
           </p>
           <button
             onClick={applyRecommended}

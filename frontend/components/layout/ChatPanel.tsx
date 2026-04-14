@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/lib/types";
 
 const STARTER_PROMPTS = [
-  "Which channel gives me the best bang for my buck?",
-  "Why is Meta showing diminishing returns?",
+  "Which channel has the highest incremental ROI?",
+  "Why is Meta past its half-saturation point?",
   "What happens if I cut YouTube by 20%?",
-  "Explain the confidence intervals in plain English",
+  "Explain the credible intervals in plain English",
 ];
 
 function TypingIndicator() {
@@ -64,7 +64,7 @@ export function ChatPanel() {
       id: "welcome",
       role: "assistant",
       content:
-        "Hi! I'm your MktgCompass AI Strategist 👋 I've analyzed your MMM results and I'm ready to help you understand what's driving your revenue — and where to invest next. What would you like to know?",
+        "Hi! I'm your MktgCompass AI Strategist. I've analyzed your Meridian model results and I'm ready to help you understand what's driving your revenue — and where to invest next. What would you like to know?",
       timestamp: new Date(),
     },
   ]);
@@ -93,16 +93,16 @@ export function ChatPanel() {
       // Demo mode: fake response after short delay
       await new Promise((r) => setTimeout(r, 1200));
       const responses: Record<string, string> = {
-        "which channel": "Based on your MMM results, Email is your highest-ROAS channel at 7.3x — meaning every $1 you spend generates $7.30 in revenue. It's also the least saturated at 32%, so there's significant room to scale. I'd recommend doubling your email budget before adding spend anywhere else.",
-        "meta": "Meta Ads is running at 85% saturation, which means you're getting much less return on each additional dollar than you were 6 months ago. The model estimates you could reallocate $7-10K from Meta to Google Search and increase total revenue by about $12K.",
-        "youtube": "Cutting YouTube by 20% (about $3,640) would reduce revenue by approximately $5,200. That's a 1.43x return on that spend, which is below your portfolio average of 3.85x. However, YouTube has strong brand equity effects that take longer to show up — I'd trim it only if you're cash-constrained.",
-        "confidence": "Think of confidence intervals like a weather forecast — the model isn't saying 'exactly $1.42M in revenue', it's saying 'we're 95% confident revenue landed between $1.31M and $1.54M.' The tighter the interval, the more data you have and the more the model trusts itself. Your high-confidence channels (Meta, Search) have very narrow intervals, which means the ROI estimates are reliable.",
+        "which channel": "Based on your Meridian model, Email has the highest incremental ROI at 7.3x (90% CI: [5.8x, 8.9x]) — meaning every $1 you spend generates $7.30 in incremental revenue that wouldn't have happened without the campaign. It's also well below its half-saturation point (ec = $22K vs current $8.4K spend), so there's significant room to scale before diminishing returns kick in.",
+        "meta": "Meta Ads is currently spending $42K, which is past its half-saturation point (ec = $32K). On the Hill curve, this means you're on the steep part of diminishing returns — each additional dollar generates progressively less incremental revenue. The model estimates reallocating $7-10K from Meta to Google Search could increase incremental revenue by about $12K.",
+        "youtube": "Cutting YouTube by 20% (about $3,640) would reduce incremental revenue by approximately $5,200, based on the model's response curve. That's a 1.43x incremental ROI on that marginal spend, below your portfolio average of 3.85x. However, YouTube has high adstock carryover (alpha = 0.78), meaning its effects persist for weeks — so you'd see the full impact over 5-6 weeks, not immediately.",
+        "credible": "Think of credible intervals like a weather forecast range. When the model says your incremental ROI is 3.85x with a 90% credible interval of [3.22x, 4.51x], it means: given the data, there's a 90% probability the true ROI falls in that range. The narrower the interval, the more data supports the estimate. Your high-data channels (Meta, Search) have tight intervals — the model is confident. YouTube's interval is wider because there's more uncertainty in the posterior.",
       };
       const key = Object.keys(responses).find((k) => text.toLowerCase().includes(k));
       const reply =
         key
           ? responses[key]
-          : "That's a great question! Based on your MMM results, I can see some interesting patterns in your data. Could you be more specific about which channel or metric you're curious about? I can walk you through the numbers in plain English.";
+          : "That's a great question! Based on your Meridian model results, I can see some interesting patterns. Could you be more specific about which channel or metric you're curious about? I can walk you through the incremental ROI, Hill curves, or budget optimization in plain English.";
 
       setMessages((prev) => [
         ...prev,

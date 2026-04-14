@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, GitMerge, Lightbulb, TrendingUp,
   FlaskConical, FileBarChart, Settings, Plus, HelpCircle, LogOut,
-  Compass, PanelLeftClose, PanelLeftOpen,
+  Compass, PanelLeftClose, PanelLeftOpen, HeartPulse,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -14,10 +14,11 @@ const NAV_SECTIONS = [
   {
     label: "Workspace",
     items: [
-      { href: "/dashboard",   label: "Overview",    icon: LayoutDashboard },
-      { href: "/attribution", label: "Attribution", icon: GitMerge },
-      { href: "/insights",    label: "Insights",    icon: Lightbulb },
-      { href: "/performance", label: "Performance", icon: TrendingUp },
+      { href: "/dashboard",    label: "Overview",      icon: LayoutDashboard },
+      { href: "/model-health", label: "Model Health", icon: HeartPulse },
+      { href: "/attribution",  label: "Attribution",  icon: GitMerge },
+      { href: "/insights",     label: "Insights",     icon: Lightbulb },
+      { href: "/performance",  label: "Performance",  icon: TrendingUp },
     ],
   },
   {

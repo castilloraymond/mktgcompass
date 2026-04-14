@@ -18,6 +18,7 @@ async def init_db() -> None:
                 progress    INTEGER NOT NULL DEFAULT 0,
                 message     TEXT NOT NULL DEFAULT '',
                 data_hash   TEXT,
+                csv_data    TEXT,
                 results     TEXT,
                 error       TEXT,
                 created_at  TEXT NOT NULL,
@@ -27,11 +28,16 @@ async def init_db() -> None:
         await db.commit()
 
 
-async def create_job(job_id: str, created_at: str, data_hash: str | None = None) -> None:
+async def create_job(
+    job_id: str,
+    created_at: str,
+    data_hash: str | None = None,
+    csv_data: str | None = None,
+) -> None:
     async with aiosqlite.connect(DB_PATH) as db:
         await db.execute(
-            "INSERT INTO jobs (job_id, created_at, data_hash) VALUES (?, ?, ?)",
-            (job_id, created_at, data_hash),
+            "INSERT INTO jobs (job_id, created_at, data_hash, csv_data) VALUES (?, ?, ?, ?)",
+            (job_id, created_at, data_hash, csv_data),
         )
         await db.commit()
 

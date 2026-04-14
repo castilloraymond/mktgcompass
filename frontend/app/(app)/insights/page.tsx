@@ -19,7 +19,7 @@ export default function InsightsPage() {
           AI Insights
         </h1>
         <p className="text-body-md text-on-surface-variant mt-1">
-          Personalized recommendations generated from your MMM results
+          Personalized recommendations generated from your Meridian model results
         </p>
       </div>
 
@@ -36,7 +36,7 @@ export default function InsightsPage() {
             {insights.length} insights generated from your model
           </p>
           <p className="text-sm text-on-surface-variant mt-0.5">
-            Acting on all high-priority recommendations could improve blended ROAS by up to{" "}
+            Acting on all high-priority recommendations could improve incremental ROI by up to{" "}
             <strong className="text-grade-elite">+18%</strong>
           </p>
         </div>

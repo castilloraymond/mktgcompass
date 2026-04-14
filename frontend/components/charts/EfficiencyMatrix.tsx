@@ -26,17 +26,22 @@ interface EfficiencyMatrixProps {
 }
 
 export function EfficiencyMatrix({ channels }: EfficiencyMatrixProps) {
-  const maxRoas = Math.max(...channels.map((c) => c.roas));
+  const maxRoi = Math.max(...channels.map((c) => c.roi));
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
           <tr>
-            {["Channel", "Spend", "CPA", "ROAS", "Grade"].map((h) => (
+            {["Channel", "Spend", "Incremental ROI", "CPIK", "Grade"].map((h) => (
               <th
                 key={h}
                 className="text-label-md font-medium text-on-surface-variant text-left pb-3 pr-6 last:pr-0"
+                title={
+                  h === "Incremental ROI" ? "Incremental Return on Investment — revenue generated per $1 spent, attributed by the Meridian model" :
+                  h === "CPIK" ? "Cost Per Incremental KPI — how much you spend to generate one incremental unit of outcome" :
+                  undefined
+                }
               >
                 {h}
               </th>
@@ -69,26 +74,31 @@ export function EfficiencyMatrix({ channels }: EfficiencyMatrixProps) {
                   </span>
                 </td>
 
-                {/* CPA */}
-                <td className="py-3 pr-6">
-                  <span className="text-sm font-mono font-tabular text-on-surface">
-                    {formatCurrency(ch.cpa)}
-                  </span>
-                </td>
-
-                {/* ROAS — with mini bar */}
+                {/* ROI with CI */}
                 <td className="py-3 pr-6">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-mono font-tabular font-semibold text-on-surface min-w-[3rem]">
-                      {formatMultiple(ch.roas)}
-                    </span>
+                    <div className="min-w-[4.5rem]">
+                      <span className="text-sm font-mono font-tabular font-semibold text-on-surface">
+                        {formatMultiple(ch.roi)}
+                      </span>
+                      <p className="text-[10px] font-mono text-on-surface-variant mt-0.5">
+                        [{formatMultiple(ch.roi_ci[0])}, {formatMultiple(ch.roi_ci[1])}]
+                      </p>
+                    </div>
                     <div className="flex-1 min-w-[80px] h-1.5 bg-surface-container rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full bg-primary transition-all duration-slow"
-                        style={{ width: `${(ch.roas / maxRoas) * 100}%` }}
+                        style={{ width: `${(ch.roi / maxRoi) * 100}%` }}
                       />
                     </div>
                   </div>
+                </td>
+
+                {/* CPIK */}
+                <td className="py-3 pr-6">
+                  <span className="text-sm font-mono font-tabular text-on-surface">
+                    {formatCurrency(ch.cpik)}
+                  </span>
                 </td>
 
                 {/* Grade */}

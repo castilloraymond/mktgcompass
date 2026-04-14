@@ -59,37 +59,37 @@ export default function OverviewPage() {
           tooltipLink="/performance"
         />
         <KPICard
-          label="Return on Ad Spend"
-          value={formatMultiple(overview.blended_roas)}
-          delta={`${overview.blended_roas_vs_target > 0 ? "+" : ""}${overview.blended_roas_vs_target.toFixed(2)}x vs target`}
+          label="Incremental ROI"
+          value={formatMultiple(overview.incremental_roi)}
+          delta={`90% CI: [${formatMultiple(overview.incremental_roi_ci[0])}, ${formatMultiple(overview.incremental_roi_ci[1])}]`}
           deltaType="positive"
-          subtitle="earned per $1 in ads"
+          subtitle="incremental return per $1 spent"
           staggerIndex={1}
-          tooltip="For every $1 you spent on advertising, you earned this much back in revenue. Your target is being exceeded."
-          tooltipTechnicalName="ROAS"
+          tooltip="For every $1 you spent on advertising, this is how much incremental revenue the model attributes to your ads — revenue that wouldn't have happened without them."
+          tooltipTechnicalName="Incremental ROI (Meridian)"
           tooltipLink="/attribution"
         />
         <KPICard
-          label="Cost per Customer"
-          value={formatCurrency(overview.weighted_cpa)}
-          delta={formatPercent(overview.weighted_cpa_delta)}
+          label="Model Fit"
+          value={`R² ${overview.model_r_squared.toFixed(2)}`}
+          delta="MAPE 2.1%"
           deltaType="positive"
-          subtitle="to win one new customer"
+          subtitle="how well the model explains your data"
           staggerIndex={2}
-          tooltip="On average, this is what you spent on ads to bring in one new customer. Lower is better."
-          tooltipTechnicalName="CPA (Cost per Acquisition)"
-          tooltipLink="/attribution"
+          tooltip="R-squared measures how much of the variation in your revenue the model explains. 0.94 means 94% — an excellent fit. MAPE is the average prediction error."
+          tooltipTechnicalName="R² / MAPE"
+          tooltipLink="/model-health"
         />
         <KPICard
-          label="Ad Impact"
-          value={`${overview.incrementality_lift}%`}
-          delta={`${overview.incrementality_confidence} confidence`}
-          deltaType="neutral"
-          subtitle="of revenue your ads created"
+          label="Incremental Revenue"
+          value={formatCurrency(overview.incremental_revenue, true)}
+          delta={`90% CI: [${formatCurrency(overview.incremental_revenue_ci[0], true)}, ${formatCurrency(overview.incremental_revenue_ci[1], true)}]`}
+          deltaType="positive"
+          subtitle="revenue your ads created"
           staggerIndex={3}
-          tooltip="Of your total revenue, this percentage came specifically because of your ads — not customers who would have bought anyway."
-          tooltipTechnicalName="Incrementality Lift"
-          tooltipLink="/insights"
+          tooltip="Of your total revenue, this amount came specifically because of your ads — the model separates ad-driven revenue from what would have happened organically."
+          tooltipTechnicalName="Incremental Outcome (Meridian)"
+          tooltipLink="/attribution"
         />
       </div>
 
@@ -106,10 +106,10 @@ export default function OverviewPage() {
         >
           <div className="mb-5">
             <h2 className="text-title-lg text-on-surface" style={{ fontFamily: "var(--font-display)" }}>
-              Where Your Revenue Came From
+              Revenue Decomposition
             </h2>
             <p className="text-[0.875rem] text-on-surface-variant mt-1">
-              How each channel contributed to your total
+              Intercept, time effects, controls, and each channel's incremental contribution
             </p>
           </div>
           <WaterfallChart data={waterfall} />
@@ -143,7 +143,7 @@ export default function OverviewPage() {
             Channel Performance
           </h2>
           <p className="text-[0.875rem] text-on-surface-variant mt-1">
-            Return on spend, cost per customer, and efficiency grades across all channels
+            Incremental ROI, cost per incremental outcome, and efficiency grades across all channels
           </p>
         </div>
         <EfficiencyMatrix channels={efficiency_matrix} />

@@ -1,43 +1,50 @@
-// ── Dashboard Data Types ──────────────────────────────────────────────
+// ── Dashboard Data Types (Meridian-aligned) ─────────────────────────
 
 export interface OverviewMetrics {
   total_revenue: number;
   total_revenue_delta: number;
-  blended_roas: number;
-  blended_roas_vs_target: number;
-  weighted_cpa: number;
-  weighted_cpa_delta: number;
-  incrementality_lift: number;
-  incrementality_confidence: "high" | "medium" | "low";
+  incremental_roi: number;
+  incremental_roi_ci: [number, number]; // 90% credible interval
+  model_r_squared: number;
+  incremental_revenue: number;
+  incremental_revenue_ci: [number, number];
 }
 
 export interface WaterfallItem {
   label: string;
   value: number;
-  type: "baseline" | "positive" | "negative" | "total";
+  type: "intercept" | "time_effects" | "controls" | "channel" | "total";
 }
 
-export interface SaturationCurvePoint {
-  spend: number;
-  marginal_return: number;
-}
-
-export interface SaturationChannel {
+/** Hill curve parameters from Meridian posterior */
+export interface HillCurveChannel {
   channel: string;
+  ec: number;           // half-saturation point (posterior mean)
+  ec_ci: [number, number];
+  slope: number;        // Hill slope (posterior mean)
+  slope_ci: [number, number];
   current_spend: number;
-  saturation_pct: number;
-  curve_points: SaturationCurvePoint[];
+  curve_points: HillCurvePoint[];
+}
+
+export interface HillCurvePoint {
+  spend: number;
+  response: number;        // incremental outcome (posterior mean)
+  response_ci_lower: number;
+  response_ci_upper: number;
 }
 
 export type EfficiencyGrade = "A+" | "A" | "B" | "C" | "D";
-export type GradeLabel = "ELITE" | "STRONG" | "OPTIMAL" | "SCALING" | "POOR";
+export type GradeLabel = "ELITE" | "STRONG" | "OPTIMAL" | "SCALING" | "UNDERPERFORMING";
 
 export interface ChannelEfficiency {
   channel: string;
   channel_type: string;
   spend: number;
-  cpa: number;
-  roas: number;
+  roi: number;                 // incremental ROI (posterior mean)
+  roi_ci: [number, number];   // 90% credible interval
+  cpik: number;                // cost per incremental KPI
+  incremental_outcome: number;
   grade: EfficiencyGrade;
   grade_label: GradeLabel;
 }
@@ -53,7 +60,7 @@ export interface BudgetOptimization {
   current_allocation: BudgetAllocation[];
   recommended_allocation: BudgetAllocation[];
   projected_lift_pct: number;
-  confidence_interval: string;
+  credible_interval: string;   // "90% CI: [X, Y]"
 }
 
 export interface InsightCard {
@@ -66,13 +73,55 @@ export interface InsightCard {
   priority: "high" | "medium" | "low";
 }
 
+/** Model fit data for Model Health page */
+export interface ModelFitPoint {
+  period: string;
+  actual: number;
+  expected: number;
+  ci_lower: number;
+  ci_upper: number;
+}
+
+export interface ModelFitMetrics {
+  r_squared: number;
+  mape: number;
+  wmape: number;
+}
+
+export interface ConvergenceParam {
+  parameter: string;
+  rhat: number;
+  status: "converged" | "borderline" | "not_converged";
+}
+
+export interface AdstockDecayChannel {
+  channel: string;
+  decay_weights: { lag: number; weight: number; ci_lower: number; ci_upper: number }[];
+}
+
+export interface ContributionTimePoint {
+  period: string;
+  baseline: number;
+  [channel: string]: number | string; // channel contributions + period string
+}
+
+export interface ModelHealth {
+  fit_chart: ModelFitPoint[];
+  fit_metrics: ModelFitMetrics;
+  convergence: ConvergenceParam[];
+  convergence_status: "converged" | "borderline" | "not_converged";
+}
+
 export interface DashboardData {
   overview: OverviewMetrics;
   waterfall: WaterfallItem[];
-  saturation_curves: SaturationChannel[];
+  hill_curves: HillCurveChannel[];
   efficiency_matrix: ChannelEfficiency[];
   budget_optimization: BudgetOptimization;
   insights: InsightCard[];
+  model_health: ModelHealth;
+  adstock_decay: AdstockDecayChannel[];
+  contributions_over_time: ContributionTimePoint[];
   model_run_date: string;
   data_period: string;
 }
@@ -103,6 +152,17 @@ export interface ValidationResult {
   can_proceed: boolean;
   issues: ValidationIssue[];
   data_summary: DataSummary;
+}
+
+// ── Column Mapping Types ─────────────────────────────────────────────
+
+export interface ColumnMapping {
+  time_col: string;
+  kpi_col: string;
+  kpi_type: "revenue" | "non_revenue";
+  spend_cols: string[];
+  media_cols: string[];   // impression columns (optional)
+  control_cols: string[];
 }
 
 // ── Chat Types ────────────────────────────────────────────────────────

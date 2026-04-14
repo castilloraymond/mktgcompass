@@ -1,4 +1,4 @@
-"""Pydantic v2 schemas for all API request/response models."""
+"""Pydantic v2 schemas for all API request/response models (Meridian-aligned)."""
 
 from __future__ import annotations
 
@@ -56,45 +56,51 @@ class TrainRequest(BaseModel):
     config: dict = Field(default_factory=dict)
 
 
-# ── Dashboard Data ────────────────────────────────────────────────────────────
+# ── Dashboard Data (Meridian-aligned) ────────────────────────────────────────
 
 class OverviewMetrics(BaseModel):
     total_revenue: float
     total_revenue_delta: float
-    blended_roas: float
-    blended_roas_vs_target: float
-    weighted_cpa: float
-    weighted_cpa_delta: float
-    incrementality_lift: float
-    incrementality_confidence: Literal["high", "medium", "low"]
+    incremental_roi: float
+    incremental_roi_ci: tuple[float, float]   # 90% credible interval
+    model_r_squared: float
+    incremental_revenue: float
+    incremental_revenue_ci: tuple[float, float]
 
 
 class WaterfallItem(BaseModel):
     label: str
     value: float
-    type: Literal["baseline", "positive", "negative", "total"]
+    type: Literal["intercept", "time_effects", "controls", "channel", "total"]
 
 
-class SaturationCurvePoint(BaseModel):
+class HillCurvePoint(BaseModel):
     spend: float
-    marginal_return: float
+    response: float
+    response_ci_lower: float
+    response_ci_upper: float
 
 
-class SaturationChannel(BaseModel):
+class HillCurveChannel(BaseModel):
     channel: str
+    ec: float                           # half-saturation point
+    ec_ci: tuple[float, float]
+    slope: float
+    slope_ci: tuple[float, float]
     current_spend: float
-    saturation_pct: float
-    curve_points: list[SaturationCurvePoint]
+    curve_points: list[HillCurvePoint]
 
 
 class ChannelEfficiency(BaseModel):
     channel: str
     channel_type: str
     spend: float
-    cpa: float
-    roas: float
+    roi: float                          # incremental ROI (posterior mean)
+    roi_ci: tuple[float, float]         # 90% credible interval
+    cpik: float                         # cost per incremental KPI
+    incremental_outcome: float
     grade: Literal["A+", "A", "B", "C", "D"]
-    grade_label: Literal["ELITE", "STRONG", "OPTIMAL", "SCALING", "POOR"]
+    grade_label: Literal["ELITE", "STRONG", "OPTIMAL", "SCALING", "UNDERPERFORMING"]
 
 
 class BudgetAllocation(BaseModel):
@@ -108,7 +114,7 @@ class BudgetOptimization(BaseModel):
     current_allocation: list[BudgetAllocation]
     recommended_allocation: list[BudgetAllocation]
     projected_lift_pct: float
-    confidence_interval: str
+    credible_interval: str
 
 
 class InsightCard(BaseModel):
@@ -121,13 +127,63 @@ class InsightCard(BaseModel):
     priority: Literal["high", "medium", "low"]
 
 
+# ── Model Health ─────────────────────────────────────────────────────────────
+
+class ModelFitPoint(BaseModel):
+    period: str
+    actual: float
+    expected: float
+    ci_lower: float
+    ci_upper: float
+
+
+class ModelFitMetrics(BaseModel):
+    r_squared: float
+    mape: float
+    wmape: float
+
+
+class ConvergenceParam(BaseModel):
+    parameter: str
+    rhat: float
+    status: Literal["converged", "borderline", "not_converged"]
+
+
+class AdstockDecayWeight(BaseModel):
+    lag: int
+    weight: float
+    ci_lower: float
+    ci_upper: float
+
+
+class AdstockDecayChannel(BaseModel):
+    channel: str
+    decay_weights: list[AdstockDecayWeight]
+
+
+class ContributionTimePoint(BaseModel):
+    period: str
+    baseline: float
+    # Channel contributions are dynamic keys — stored as extra dict fields
+
+
+class ModelHealth(BaseModel):
+    fit_chart: list[ModelFitPoint]
+    fit_metrics: ModelFitMetrics
+    convergence: list[ConvergenceParam]
+    convergence_status: Literal["converged", "borderline", "not_converged"]
+
+
 class DashboardResults(BaseModel):
     overview: OverviewMetrics
     waterfall: list[WaterfallItem]
-    saturation_curves: list[SaturationChannel]
+    hill_curves: list[HillCurveChannel]
     efficiency_matrix: list[ChannelEfficiency]
     budget_optimization: BudgetOptimization
     insights: list[InsightCard]
+    model_health: ModelHealth
+    adstock_decay: list[AdstockDecayChannel]
+    contributions_over_time: list[dict]  # ContributionTimePoint-like dicts
     model_run_date: str
     data_period: str
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import io
 import uuid
 from datetime import datetime, timezone
@@ -19,13 +20,16 @@ router = APIRouter()
 @router.post("/train")
 async def start_training(req: TrainRequest, background_tasks: BackgroundTasks) -> dict:
     """Kick off Meridian model training for a job."""
-    # For demo: accept job_id without stored CSV (use mock data)
     job = await get_job(req.job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found. Upload a CSV first.")
 
-    # Dispatch background task
-    background_tasks.add_task(run_training, req.job_id, b"", req.config)
+    # Retrieve stored CSV data (base64-encoded)
+    csv_b64 = job.get("csv_data", "")
+    csv_bytes = base64.b64decode(csv_b64) if csv_b64 else b""
+
+    # Dispatch background task with actual CSV data
+    background_tasks.add_task(run_training, req.job_id, csv_bytes, req.config)
     return {"job_id": req.job_id, "message": "Training started"}
 
 

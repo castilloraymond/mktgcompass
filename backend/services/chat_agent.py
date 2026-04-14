@@ -11,27 +11,38 @@ import anthropic
 from models.schemas import ChatMessage, DashboardResults
 
 SYSTEM_PROMPT = """You are the MktgCompass AI Strategist — a friendly, expert marketing analyst
-who helps non-technical marketers understand their campaign performance.
+who helps non-technical marketers understand their Meridian MMM results.
 
 PERSONALITY:
 - Warm, approachable, and encouraging
-- Explains statistical concepts in plain English with analogies
+- Explains Bayesian modeling concepts in plain English with analogies
 - Never uses jargon without explaining it immediately
-- Proactively suggests actions ("Based on the saturation curve, I'd recommend...")
-- Celebrates wins ("Your Meta campaigns are performing really well!")
+- Proactively suggests actions ("Based on the Hill curve, I'd recommend...")
+- Celebrates wins ("Your Email channel has an outstanding 7.3x ROI!")
 
 CAPABILITIES:
-- Answer questions about MMM model results in plain English
-- Explain what specific metrics mean and why they matter
+- Answer questions about Meridian model results in plain English
+- Explain what incremental ROI, CPIK, Hill curves, and adstock mean
 - Run what-if budget scenarios
-- Suggest budget reallocation based on saturation curves and optimization output
-- Flag potential issues (channel saturation, data quality concerns)
-- Educate users on MMM concepts when asked
+- Suggest budget reallocation based on Hill saturation curves and the Meridian optimizer
+- Flag potential issues (channels past half-saturation, wide credible intervals, convergence concerns)
+- Educate users on Bayesian MMM concepts when asked
+
+KEY MERIDIAN CONCEPTS (use these correctly):
+- "Incremental ROI" (not ROAS): Revenue generated per $1 of spend, as attributed by the model
+- "CPIK" (Cost Per Incremental KPI): How much it costs to generate one unit of incremental outcome
+- "Hill curve": The saturation/response function — response = spend^slope / (spend^slope + ec^slope)
+- "ec" (half-saturation point): The spend level where the channel reaches 50% of its maximum response
+- "slope": How steep the curve is — higher slope = sharper diminishing returns after ec
+- "Adstock/carryover": How long a channel's impact persists after spend stops (geometric decay)
+- "Credible interval" (not confidence interval): Bayesian posterior uncertainty range, typically 90%
+- "R-hat": MCMC convergence diagnostic — values < 1.1 mean the model converged properly
+- "Intercept": Baseline demand that exists without any marketing spend
 
 CONSTRAINTS:
-- Always caveat uncertainty: "The model estimates X with high confidence"
+- Always caveat uncertainty: "The model estimates X with a 90% credible interval of [Y, Z]"
 - Remind users this is a demo version if they try to make real budget decisions
-- Keep responses concise (2–4 paragraphs max)
+- Keep responses concise (2-4 paragraphs max)
 - Use numbers from the context when available
 - If asked about things outside MMM scope, redirect helpfully
 
@@ -48,27 +59,55 @@ def _build_context(results: Optional[dict]) -> str:
     try:
         d = DashboardResults(**results)
         ov = d.overview
-        top_channel = max(d.efficiency_matrix, key=lambda c: c.roas)
-        worst_channel = min(d.efficiency_matrix, key=lambda c: c.roas)
-        most_saturated = max(d.saturation_curves, key=lambda c: c.saturation_pct)
-        return f"""
+
+        top_channel = max(d.efficiency_matrix, key=lambda c: c.roi)
+        worst_channel = min(d.efficiency_matrix, key=lambda c: c.roi)
+
+        # Find channel closest to / past half-saturation
+        most_saturated = None
+        if d.hill_curves:
+            most_saturated = max(
+                d.hill_curves,
+                key=lambda c: c.current_spend / c.ec if c.ec > 0 else 0,
+            )
+
+        context = f"""
 CURRENT MODEL RESULTS (use these numbers when answering):
 - Total Revenue: ${ov.total_revenue:,.0f} ({ov.total_revenue_delta:+.1f}% vs prior period)
-- Blended ROAS: {ov.blended_roas:.2f}x
-- Weighted CPA: ${ov.weighted_cpa:.2f}
-- Incrementality Lift: {ov.incrementality_lift}% ({ov.incrementality_confidence} confidence)
+- Incremental ROI: {ov.incremental_roi:.2f}x (90% CI: [{ov.incremental_roi_ci[0]:.2f}x, {ov.incremental_roi_ci[1]:.2f}x])
+- Model Fit (R²): {ov.model_r_squared:.2f}
+- Incremental Revenue: ${ov.incremental_revenue:,.0f} (90% CI: [${ov.incremental_revenue_ci[0]:,.0f}, ${ov.incremental_revenue_ci[1]:,.0f}])
 
-CHANNEL PERFORMANCE:
-{chr(10).join(f"- {c.channel}: ROAS {c.roas:.2f}x, Grade {c.grade} ({c.grade_label}), Spend ${c.spend:,.0f}" for c in d.efficiency_matrix)}
+CHANNEL PERFORMANCE (sorted by ROI):
+{chr(10).join(f"- {c.channel}: ROI {c.roi:.2f}x (90% CI: [{c.roi_ci[0]:.2f}x, {c.roi_ci[1]:.2f}x]), CPIK ${c.cpik:.2f}, Grade {c.grade} ({c.grade_label}), Spend ${c.spend:,.0f}" for c in d.efficiency_matrix)}
 
-TOP PERFORMER: {top_channel.channel} at {top_channel.roas:.2f}x ROAS
-NEEDS ATTENTION: {worst_channel.channel} at {worst_channel.roas:.2f}x ROAS
-MOST SATURATED: {most_saturated.channel} at {most_saturated.saturation_pct:.0f}% saturation
+TOP PERFORMER: {top_channel.channel} at {top_channel.roi:.2f}x incremental ROI
+NEEDS ATTENTION: {worst_channel.channel} at {worst_channel.roi:.2f}x incremental ROI"""
+
+        if most_saturated:
+            sat_ratio = most_saturated.current_spend / most_saturated.ec if most_saturated.ec > 0 else 0
+            sat_label = "past" if sat_ratio > 1 else "approaching" if sat_ratio > 0.8 else "below"
+            context += f"""
+SATURATION STATUS: {most_saturated.channel} is {sat_label} its half-saturation point (ec=${most_saturated.ec:,.0f}, current spend=${most_saturated.current_spend:,.0f}, slope={most_saturated.slope:.1f})"""
+
+        if d.hill_curves:
+            context += f"""
+
+HILL CURVE PARAMETERS:
+{chr(10).join(f"- {h.channel}: ec=${h.ec:,.0f} (90% CI: [${h.ec_ci[0]:,.0f}, ${h.ec_ci[1]:,.0f}]), slope={h.slope:.1f}" for h in d.hill_curves)}"""
+
+        context += f"""
+
+MODEL HEALTH:
+- R²: {d.model_health.fit_metrics.r_squared:.2f}, MAPE: {d.model_health.fit_metrics.mape:.1f}%, WMAPE: {d.model_health.fit_metrics.wmape:.1f}%
+- Convergence: {d.model_health.convergence_status}
 
 BUDGET RECOMMENDATION:
 - Current total: ${d.budget_optimization.total_budget:,.0f}
 - Projected lift from reallocation: +{d.budget_optimization.projected_lift_pct}%
-"""
+- {d.budget_optimization.credible_interval}"""
+
+        return context
     except Exception:
         return "Model results available but couldn't be parsed."
 
